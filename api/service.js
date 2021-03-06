@@ -1,7 +1,7 @@
 const { promisify } = require("util");
 const axios = require("axios").default;
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient(process.env.REDIS_URL || '');
 const get = promisify(client.get).bind(client);
 const set = promisify(client.set).bind(client);
 const expire = promisify(client.expire).bind(client);
