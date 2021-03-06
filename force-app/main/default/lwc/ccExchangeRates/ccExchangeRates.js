@@ -1,5 +1,9 @@
 import { LightningElement, api, wire, track } from "lwc";
-import { getRecord, getFieldValue, getFieldDisplayValue } from "lightning/uiRecordApi";
+import {
+  getRecord,
+  getFieldValue,
+  getFieldDisplayValue
+} from "lightning/uiRecordApi";
 import AMOUNT_FIELD from "@salesforce/schema/Opportunity.Amount";
 
 // Currency options
@@ -18,71 +22,42 @@ export default class CcExchangeRates extends LightningElement {
     if (data) {
       this.displayAmount = getFieldDisplayValue(data, AMOUNT_FIELD);
       this.amount = getFieldValue(data, AMOUNT_FIELD);
-      this.handleCurrencyConversion()
-      // this.amount = JSON.stringify(data)
+      this.handleCurrencyConversion();
     } else {
       console.log("~~~ERROR IN CcExchangeRates.js:~~~ " + error);
     }
   }
 
-  @track toCurrencyValue = 'BTC';
-  @track toCurrencyValueConfirm = 'BTC';
+  @track toCurrencyValue = "BTC";
+  @track toCurrencyValueConfirm = "BTC";
   @track options = options;
-  @track defaultCurrency = 'BTC';
+  @track defaultCurrency = "BTC";
   @track conversionData;
   @track showExchangeOption = false;
-  // Getting Base currency value
   handleToCurrencyChange(event) {
     this.toCurrencyValue = event.detail.value;
   }
-  
-  calculate(){
+
+  calculate() {
     const exchangeRate = this.conversionData.exchangeRate;
-    this.toCurrencyAmount = Math.round(this.amount / exchangeRate * 1000) / 1000;
+    this.toCurrencyAmount =
+      Math.round((this.amount / exchangeRate) * 1000) / 1000;
   }
-  handleShowExchangeOptions(){
+  handleShowExchangeOptions() {
     this.showExchangeOption = !this.showExchangeOption;
   }
-  // Making Callout using Fetch
-  handleCurrencyConversion() {
-     fetch(
-      "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=" +
-        this.toCurrencyValue +
-        "&to_currency=USD&apikey=V0ZRFUZI7YQGGLXB", // End point URL
-      {
-        // Request type
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    )
-      .then((response) => {
-        return response.json(); // returning the response in the form of JSON
-      })
-      .then((jsonResponse) => {
-        let objData = {
-          toCurrencyCode : '',
-          toCurrencyName : '',
-          exchangeRate: 1
-        };
-
-        console.log("jsonResponse ===> " + JSON.stringify(jsonResponse));
-        // retriving the response data
-        let exchangeData = jsonResponse["Realtime Currency Exchange Rate"];
-
-        // adding data object
-        objData.toCurrencyCode = exchangeData["1. From_Currency Code"];
-        objData.toCurrencyName = exchangeData["2. From_Currency Name"];
-        objData.exchangeRate = exchangeData["5. Exchange Rate"];
-
-        // adding data object to show in UI
-        this.conversionData = objData;
-        this.calculate();
-        this.toCurrencyValueConfirm = this.toCurrencyValue;
-      })
-      .catch((error) => {
-        console.log("callout error ===> " + JSON.stringify(error));
+  async handleCurrencyConversion() {
+    try {
+      const data = await fetch(
+        `https://powerhack.debugs.online/getExchangeRate?toCurrency=${this.toCurrencyValue}`
+      ).then((response) => {
+        return response.json();
       });
+      this.conversionData = data;
+      this.calculate();
+      this.toCurrencyValueConfirm = this.toCurrencyValue;
+    } catch (error) {
+      console.log("callout error ===> " + JSON.stringify(error));
+    }
   }
 }

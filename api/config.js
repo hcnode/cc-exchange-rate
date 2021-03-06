@@ -1,7 +1,7 @@
 module.exports = {
   // currency options
   currencyOptions: [
-    { label: "BTC", value: "BTC" },
+    { label: "BTC", value: "BTC", default: true },
     { label: "ETH", value: "ETH" },
     { label: "DOGE", value: "DOGE" }
   ],
