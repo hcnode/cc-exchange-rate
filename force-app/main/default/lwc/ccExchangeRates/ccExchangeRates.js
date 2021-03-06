@@ -1,41 +1,44 @@
 import { LightningElement, api, wire, track } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import {
   getRecord,
   getFieldValue,
-  getFieldDisplayValue
+  getFieldDisplayValue,
+  updateRecord
 } from "lightning/uiRecordApi";
 import AMOUNT_FIELD from "@salesforce/schema/Opportunity.Amount";
+import CRYPTOCURRENCYCODE_FIELD from "@salesforce/schema/Opportunity.CryptocurrencyCode__c";
+import ID_FIELD from "@salesforce/schema/Opportunity.Id";
 
-// Currency options
-const options = [
-  { label: "BTC", value: "BTC" },
-  { label: "ETH", value: "ETH" },
-  { label: "DOGE", value: "DOGE" }
-];
 export default class CcExchangeRates extends LightningElement {
   @api recordId;
   @track amount;
   @track displayAmount;
   @track toCurrencyAmount;
-  @wire(getRecord, { recordId: "$recordId", fields: [AMOUNT_FIELD] })
-  getOpportunity({ error, data }) {
+  @track toCurrencyValue = "";
+  @track options = [];
+  @track conversionData;
+  @track showExchangeOption = false;
+
+  @wire(getRecord, {
+    recordId: "$recordId",
+    fields: [AMOUNT_FIELD, CRYPTOCURRENCYCODE_FIELD]
+  })
+  async getOpportunity({ error, data }) {
     if (data) {
       this.displayAmount = getFieldDisplayValue(data, AMOUNT_FIELD);
       this.amount = getFieldValue(data, AMOUNT_FIELD);
+      this.toCurrencyValue = getFieldValue(data, CRYPTOCURRENCYCODE_FIELD);
+      await this.getCurrencyOptions();
       this.handleCurrencyConversion();
     } else {
       console.log("~~~ERROR IN CcExchangeRates.js:~~~ " + error);
     }
   }
 
-  @track toCurrencyValue = "BTC";
-  @track toCurrencyValueConfirm = "BTC";
-  @track options = options;
-  @track defaultCurrency = "BTC";
-  @track conversionData;
-  @track showExchangeOption = false;
   handleToCurrencyChange(event) {
     this.toCurrencyValue = event.detail.value;
+    this.handleCurrencyConversion();
   }
 
   calculate() {
@@ -48,16 +51,65 @@ export default class CcExchangeRates extends LightningElement {
   }
   async handleCurrencyConversion() {
     try {
-      const data = await fetch(
-        `https://powerhack.debugs.online/getExchangeRate?toCurrency=${this.toCurrencyValue}`
+      if (this.toCurrencyValue) {
+        const data = await fetch(
+          `https://powerhack.debugs.online/getExchangeRate?toCurrency=${this.toCurrencyValue}`
+        ).then((response) => {
+          return response.json();
+        });
+        this.conversionData = data;
+        this.calculate();
+      }
+    } catch (error) {
+      console.log("callout error ===> " + JSON.stringify(error));
+    }
+  }
+
+  async getCurrencyOptions() {
+    try {
+      const options = await fetch(
+        `https://powerhack.debugs.online/currencyOptions`
       ).then((response) => {
         return response.json();
       });
-      this.conversionData = data;
-      this.calculate();
-      this.toCurrencyValueConfirm = this.toCurrencyValue;
+      this.options = options;
+      if (this.toCurrencyValue === "") {
+        this.toCurrencyValue = 
+          (this.options.find((option) => option.default) || {}).value || "BTC";
+      }
     } catch (error) {
       console.log("callout error ===> " + JSON.stringify(error));
+    }
+  }
+
+  async handleSaveCryptoCurrencyCode() {
+    const fields = {};
+
+    try {
+      fields[CRYPTOCURRENCYCODE_FIELD.fieldApiName] = this.toCurrencyValue;
+      fields[ID_FIELD.fieldApiName] = this.recordId;
+      const recordInput = { fields };
+      updateRecord(recordInput)
+        .then(() => {
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: "Success",
+              message: "Opportunity updated",
+              variant: "success"
+            })
+          );
+        })
+        .catch((error) => {
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: "Error updated record",
+              message: error.body.message,
+              variant: "error"
+            })
+          );
+        });
+    } catch (error) {
+      console.error(error);
     }
   }
 }

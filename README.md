@@ -1,18 +1,16 @@
-# Salesforce DX Project: Next Steps
+# Crytocurrencies supported for Lightning Web Component
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+## features
+* Show selected cryptocurrency exchange rate in REAL TIME
+* Selected cryptocurrency can be saved to the context record
+* Use multiple exchange rate services
 
-## How Do You Plan to Deploy Your Changes?
+## Usages
+* Create custom field `CryptocurrencyCode` for the cryptocurrency code in Opportunity Object
+* In `CSP Trusted Sites` Setting, add `https://powerhack.debugs.online` to the Trusted Sites list
+* In `Remote Site Settings` Setting, add `https://powerhack.debugs.online` to the Remote Site list
+* Edit Opportunity Detail Page, drag `ccExchangeRates` component to the detail page, and save.
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
-
-## Configure Your Salesforce DX Project
-
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
-
-## Read All About It
-
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+## Workflow
+1. 
+![1](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")

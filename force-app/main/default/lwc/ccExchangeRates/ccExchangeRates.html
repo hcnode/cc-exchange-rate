@@ -5,53 +5,58 @@
   >
     <div class="slds-m-around_medium">
       <p>
-        Amount:{displayAmount} = {toCurrencyValueConfirm}:&nbsp;
-        <span style="color:blue;font-weight:bold;margin-right:10px;">{toCurrencyAmount}</span>
-        <lightning-button title="Currency Conversion" 
-            label="Show Exchange Options" 
-            variant="brand" 
-            onclick={handleShowExchangeOptions}></lightning-button>  
+        Amount:{displayAmount} = {toCurrencyValue}:&nbsp;
+        <span style="color: blue; font-weight: bold; margin-right: 10px"
+          >{toCurrencyAmount}</span
+        >
+        <lightning-button
+          title="Currency Conversion"
+          label="Show Exchange Options"
+          variant="brand"
+          onclick={handleShowExchangeOptions}
+        ></lightning-button>
       </p>
     </div>
-     
-    <template if:true={showExchangeOption}> 
-        <lightning-layout multiple-rows="true" vertical-align="end">
+
+    <template if:true={showExchangeOption}>
+      <lightning-layout multiple-rows="true" vertical-align="end">
         <lightning-layout-item
-            size="12"
-            small-device-size="4"
-            medium-device-size="2"
-            large-device-size="2"
-            padding="around-small"
+          size="12"
+          small-device-size="4"
+          medium-device-size="2"
+          large-device-size="2"
+          padding="around-small"
         >
-            <div class="slds-form-element">
+          <div class="slds-form-element">
             <div class="slds-form-element__control">
-                <lightning-combobox
+              <lightning-combobox
                 title="Select Currency"
                 label="To Currency"
                 value={toCurrencyValue}
                 placeholder="-Select-"
                 options={options}
                 onchange={handleToCurrencyChange}
-                ></lightning-combobox>
+              ></lightning-combobox>
             </div>
-            </div>
+          </div>
         </lightning-layout-item>
 
         <lightning-layout-item
-            size="12"
-            small-device-size="2"
-            medium-device-size="2"
-            large-device-size="2"
-            padding="around-small"
+          size="12"
+          small-device-size="2"
+          medium-device-size="2"
+          large-device-size="2"
+          padding="around-small"
         >
-            <lightning-button
-            title="Currency Conversion"
-            label="Apply Rate"
+          <lightning-button
+            title="Save"
+            label="Save"
             variant="brand"
-            onclick={handleCurrencyConversion}
-            ></lightning-button>
+            onclick={handleSaveCryptoCurrencyCode}
+          ></lightning-button>
         </lightning-layout-item>
-        </lightning-layout>
+
+      </lightning-layout>
     </template>
   </lightning-card>
 </template>
