@@ -7,7 +7,7 @@ module.exports = {
   ],
   // cache expire seconds
   cacheExpireSecond: 3,
-  // exchange rate api list
+  // exchange rate external api list
   apis: [
     {
       id: 1,

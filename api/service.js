@@ -1,7 +1,10 @@
+/**
+ * service of api
+ */
 const { promisify } = require("util");
 const axios = require("axios").default;
 const redis = require("redis");
-const client = redis.createClient(process.env.REDIS_URL || '');
+const client = redis.createClient(process.env.REDIS_URL || "");
 const get = promisify(client.get).bind(client);
 const set = promisify(client.set).bind(client);
 const expire = promisify(client.expire).bind(client);
@@ -9,15 +12,30 @@ const expire = promisify(client.expire).bind(client);
 client.on("error", function (error) {
   console.error(error);
 });
-
+/**
+ * Save rate data to cache
+ * @param {*} key
+ * @param {*} value
+ * @param {*} config
+ */
 async function saveRateToCache(key, value, config) {
   await set(key, value);
   await expire(key, config.cacheExpireSecond);
 }
+/**
+ * get data from cache
+ * @param {*} key
+ * @returns
+ */
 function getRateFromCache(key) {
   return get(key);
 }
-
+/**
+ * get rate, try to get from cache, or from api
+ * @param {*} toCurrency
+ * @param {*} config
+ * @returns
+ */
 async function getExchangeRate(toCurrency, config) {
   const cacheData = await getRateFromCache(toCurrency);
   if (cacheData) {
@@ -27,11 +45,16 @@ async function getExchangeRate(toCurrency, config) {
   await saveRateToCache(toCurrency, JSON.stringify(data), config);
   return data;
 }
-
+/**
+ * call external api
+ * @param {*} toCurrency
+ * @param {*} config
+ * @returns
+ */
 async function callApi(toCurrency, config) {
   for (api of config.apis) {
     try {
-      if(api.enable){
+      if (api.enable) {
         const response = await axios.get(
           api.url.replace("${fromCurrency}", toCurrency)
         );

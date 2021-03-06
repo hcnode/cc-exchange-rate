@@ -9,7 +9,9 @@ import {
 import AMOUNT_FIELD from "@salesforce/schema/Opportunity.Amount";
 import CRYPTOCURRENCYCODE_FIELD from "@salesforce/schema/Opportunity.CryptocurrencyCode__c";
 import ID_FIELD from "@salesforce/schema/Opportunity.Id";
-
+/**
+ * lightning web component
+ */
 export default class CcExchangeRates extends LightningElement {
   @api recordId;
   @track amount;
@@ -19,7 +21,10 @@ export default class CcExchangeRates extends LightningElement {
   @track options = [];
   @track conversionData;
   @track showExchangeOption = false;
-
+  /**
+   * get record
+   * @param {*} param0
+   */
   @wire(getRecord, {
     recordId: "$recordId",
     fields: [AMOUNT_FIELD, CRYPTOCURRENCYCODE_FIELD]
@@ -35,20 +40,31 @@ export default class CcExchangeRates extends LightningElement {
       console.log("~~~ERROR IN CcExchangeRates.js:~~~ " + error);
     }
   }
-
+  /**
+   * combobox changed event
+   * @param {*} event
+   */
   handleToCurrencyChange(event) {
     this.toCurrencyValue = event.detail.value;
     this.handleCurrencyConversion();
   }
-
+  /**
+   * calculate the amount in cryptocurrency
+   */
   calculate() {
     const exchangeRate = this.conversionData.exchangeRate;
     this.toCurrencyAmount =
       Math.round((this.amount / exchangeRate) * 1000) / 1000;
   }
+  /**
+   * show or hide options
+   */
   handleShowExchangeOptions() {
     this.showExchangeOption = !this.showExchangeOption;
   }
+  /**
+   * call api
+   */
   async handleCurrencyConversion() {
     try {
       if (this.toCurrencyValue) {
@@ -64,7 +80,9 @@ export default class CcExchangeRates extends LightningElement {
       console.log("callout error ===> " + JSON.stringify(error));
     }
   }
-
+  /**
+   * get options from api
+   */
   async getCurrencyOptions() {
     try {
       const options = await fetch(
@@ -74,14 +92,16 @@ export default class CcExchangeRates extends LightningElement {
       });
       this.options = options;
       if (this.toCurrencyValue === "") {
-        this.toCurrencyValue = 
+        this.toCurrencyValue =
           (this.options.find((option) => option.default) || {}).value || "BTC";
       }
     } catch (error) {
       console.log("callout error ===> " + JSON.stringify(error));
     }
   }
-
+  /**
+   * save currency code to record
+   */
   async handleSaveCryptoCurrencyCode() {
     const fields = {};
 
