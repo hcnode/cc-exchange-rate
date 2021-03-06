@@ -21,7 +21,7 @@ export default class CcExchangeRates extends LightningElement {
       this.handleCurrencyConversion()
       // this.amount = JSON.stringify(data)
     } else {
-      console.log("~~~ERROR IN ContactComponent.js:~~~ " + error);
+      console.log("~~~ERROR IN CcExchangeRates.js:~~~ " + error);
     }
   }
 
@@ -67,7 +67,7 @@ export default class CcExchangeRates extends LightningElement {
           exchangeRate: 1
         };
 
-        window.console.log("jsonResponse ===> " + JSON.stringify(jsonResponse));
+        console.log("jsonResponse ===> " + JSON.stringify(jsonResponse));
         // retriving the response data
         let exchangeData = jsonResponse["Realtime Currency Exchange Rate"];
 
@@ -82,7 +82,7 @@ export default class CcExchangeRates extends LightningElement {
         this.toCurrencyValueConfirm = this.toCurrencyValue;
       })
       .catch((error) => {
-        window.console.log("callout error ===> " + JSON.stringify(error));
+        console.log("callout error ===> " + JSON.stringify(error));
       });
   }
 }

@@ -1,22 +1,21 @@
 const config = require("./config");
-const axios = require('axios').default;
+const service = require('./service')
 const express = require("express");
 const app = express();
 const port = 3005;
-
+/**
+ * router for get currency options
+ */
 app.get("/currencyOptions", (req, res) => {
   res.json(config.currencyOptions);
 });
-
+/**
+ * router for get exchange rate
+ */
 app.get("/getExchangeRate", async (req, res) => {
   const toCurrency = req.query.toCurrency;
-  const api = config.apis[0];
-  try {
-    const response = await axios.get(api.url.replace('${fromCurrency}', toCurrency));
-    res.json(api.format(response.data));
-  } catch (error) {
-    console.error(error);
-  }
+  const data = service.getExchangeRate(toCurrency, config)
+  res.json(data);
 });
 
 app.listen(port, () => {
