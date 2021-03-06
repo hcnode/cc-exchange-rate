@@ -1,4 +1,4 @@
-# Crytocurrencies supported for Lightning Web Component
+# Crytocurrencies Exchange rate
 
 ## features
 * Show selected cryptocurrency exchange rate in REAL TIME
@@ -28,10 +28,25 @@
 
 ## Server side
 ### Prerequisites
-node.js
-express
-axios
-redis
+* node.js
+* express
+* axios
+* redis
 
 ### getExchangeRate api work flow
 ![7](https://raw.githubusercontent.com/hcnode/cc-exchange-rate/master/screenshots/7.png "component")
+
+### Multipule Api support
+#### Why?
+* Stability concern(limit access times/network issues)
+* Using standard data structure.
+* CORS concern
+
+### Run/Deploy
+* Depend local redis or config env `REDIS_URL`, then run `node app.js`.
+* Or Run docker compose: `docker-compose up`
+
+### Unit Test
+`yarn run test`
+
+### Improvement
