@@ -14,7 +14,7 @@ app.get("/currencyOptions", (req, res) => {
  */
 app.get("/getExchangeRate", async (req, res) => {
   const toCurrency = req.query.toCurrency;
-  const data = service.getExchangeRate(toCurrency, config)
+  const data = await service.getExchangeRate(toCurrency, config)
   res.json(data);
 });
 
