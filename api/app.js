@@ -1,8 +1,11 @@
 const config = require("./config");
 const service = require('./service')
 const express = require("express");
+var cors = require('cors')
 const app = express();
 const port = 3005;
+
+app.use(cors())
 /**
  * router for get currency options
  */
